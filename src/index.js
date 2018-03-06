@@ -1,17 +1,54 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+class Parent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      sizeofboard:3
+    }
+  }
+
+  onincrease=()=>{
+    console.log('increase clicked');
+    this.setState({
+      sizeofboard: this.state.sizeofboard+1
+    });
+   // console.log(this.state.sizeofboard);
+  }
+  render() {
+    return(
+      <div className="size">
+
+      <Game sizeofboard={this.state.sizeofboard} />
+      <button className="button2 " onClick={() => this.onincrease()}>Size++</button>
+      </div>
+    );
+  }
+}
+
 class  Game extends React.Component {
    constructor(props){
       super(props);
-      this.size=3;
-      this.board=this.initilaizefun(this.size);
+
       this.state={
-         rows:this.size,
-         columns:this.size,
-         arr:this.board
-      }
+         size:props.sizeofboard,
+         rows:props.sizeofboard,
+         columns:props.sizeofboard,
+         arr:this.initilaizefun(props.sizeofboard)
+    }
+      console.log(this.state.sizeofboard);
    }
+   componentWillReceiveProps(nextProps){
+      if(nextProps.sizeofboard != this.state.size){
+        this.setState({
+         size:nextProps.sizeofboard,
+         rows:nextProps.sizeofboard,
+         columns:nextProps.sizeofboard,
+         arr:this.initilaizefun(nextProps.sizeofboard)
+        })
+      }
+    }
     shuffle =(array)=>{
        for(var  i=0;i<array.length;i++){
          var randomindex= Math.floor(Math.random() * array.length);
@@ -45,7 +82,7 @@ class  Game extends React.Component {
    return grid;
   }
   clickfun=(value,xcordinate,ycordinate)=>{
-    console.log(value);
+    //console.log(value);
      var dx=[-1,0,1,0];
      var dy=[0,1,0,-1];
      let x=xcordinate;let y=ycordinate;
@@ -54,12 +91,12 @@ class  Game extends React.Component {
        var newy=y+dy[i];
 
        var flag=false;
-       console.log('this.state.size is :'+this.state.rows);
+       //console.log('this.state.size is :'+this.state.rows);
        //let arrclone=this.state.arr;
        if(newx>=0 && newx<=this.state.rows-1 && newy>=0 && newy<=this.state.columns-1 && flag===false){
-         console.log('in');
-         console.log('newx is '+newx);
-         console.log('newy is '+newy);
+       //  console.log('in');
+         //console.log('newx is '+newx);
+         //console.log('newy is '+newy);
              if(this.state.arr[newx][newy].value===0 && flag===false){
                console.log('change to happen');
                 console.log(newx);
@@ -82,6 +119,7 @@ class  Game extends React.Component {
   rendergrid = () => {
     let arr1 = Array(this.state.rows).fill(0);
     let arr2=Array(this.state.columns).fill(0);
+    //console.log(arr1);
     return arr1.map((val, index1) => {
       return (
         <div className="board">
@@ -94,7 +132,7 @@ class  Game extends React.Component {
     });
   };
    increase=()=>{
-     
+
 
    }
    render() {
@@ -104,11 +142,9 @@ class  Game extends React.Component {
        <div className="render">
         {this.rendergrid()}
       </div>
-      <div className="size">
-      <button className="button1 onClick={()=>this.increase()}">Size++</button>
-      </div>
+
       </div>
      );
    }
 }
-ReactDOM.render(<Game />, document.getElementById('root'));
+ReactDOM.render(<Parent />, document.getElementById('root'));
